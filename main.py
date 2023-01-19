@@ -3,9 +3,10 @@ from pathlib import Path
 
 discordfolder = ""
 
-if not os.access('/etc/shadow', os.R_OK):
-    print("run with sudo bitchass")
+if not os.geteuid() == 0:
+    print("run with super user perms bitchass")
     exit()
+print("welcome to injectiOwOn! sit back and ill do everything :3")
 p = Path('.')
 vencord_base_path = Path(__file__).parent.parent.absolute()
 dist_path = vencord_base_path / 'dist'
