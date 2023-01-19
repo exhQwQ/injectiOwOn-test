@@ -21,5 +21,5 @@ discord_paths = [
 for i in discord_paths:
     if Path(i).exists():
         discordfolder = i
-os.system(f"echo 'require(\"{str(dist_path.absolute()) + '/patcher.js'}\");' > {discordfolder+'/resources/app.asar/lmao.js'} ")
+os.system(f"echo 'require(\"{str(dist_path.absolute()) + '/patcher.js'}\");' > {discordfolder+'/resources/app.asar/index.js'} ")
 print("done, i think")
