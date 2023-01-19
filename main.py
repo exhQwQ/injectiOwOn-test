@@ -21,5 +21,7 @@ discord_paths = [
 for i in discord_paths:
     if Path(i).exists():
         discordfolder = i
-os.system(f"echo 'require(\"{str(dist_path.absolute()) + '/patcher.js'}\");' > {discordfolder+'/resources/app.asar/index.js'} ")
+with open(discordfolder+'/resources/app.asar/test.js', 'w') as f:
+    filecontent = f"require('{str(dist_path.absolute())}/patcher.js')"
+    f.write(filecontent)
 print("done, i think")
