@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
+import os
 from pathlib import Path
 import argparse
 import errno
-import os
+import subprocess
 import sys
 import requests
+import zipfile
+
 
 if "linux" in sys.platform:
     from linux import get_discord
@@ -23,12 +26,12 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument(
     "channel",
-    required=False,
     default="stable",
     choices=["stable", "canary", "dev", "devel", "development", "ptb"],
     type=str.lower,
     help="Optional release channel to install for."
 )
+
 # @ECHO please do add a short and long option pair for people to specify a
 # custom path. It should point to the resources folder. Symlinks and
 # relative paths should be safe, so you'll need to edit some code to handle it.
@@ -36,10 +39,28 @@ parser.add_argument(
 
 
 def main() -> None:
+    if "linux" in sys.platform and not os.geteuid() == 0:
+        print("please run with superuser perms :3")
+        exit(1)
     print("welcome to InjectiOwOn! Sit back and I'll do everything :3")
 
+
+    print("downloading vencord.....")
+    url = 'https://codeload.github.com/Vendicated/Vencord/zip/refs/heads/main'
+    r = requests.get(url, allow_redirects=True)
+    print("extracting.....")
+    open('base.zip', 'wb').write(r.content)
+    with zipfile.ZipFile("./base.zip", 'r') as zip_ref:
+        zip_ref.extractall(".")
+    print("installing needed packages")
+    os.chdir("./Vencord-main")
+    os.system("pnpm i; pnpm build")
+    
+
+#now we can use our own vencord
+
     discordfolder: Path = Path(".")
-    vencord_base_path = Path(__file__).parent.parent.resolve().absolute()
+    vencord_base_path = Path(__file__).parent/"Vencord-main"
 
     dist_path = vencord_base_path / "dist"
     if not dist_path.exists():

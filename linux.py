@@ -15,10 +15,7 @@ def get_discord(channel: str = "stable") -> Path:
         else "Developer"
     )
     discordfolder: Optional[Path] = None
-    # This is platform specific and only runs on Unix/not Emscripten/not WASI
-    if not os.geteuid() == 0:  # type: ignore
-        print("run with super user perms bitchass")
-        exit()
+    # moved to main
 
     discord_paths: List[str] = [
         f"/usr/share/discord-{cname}",
