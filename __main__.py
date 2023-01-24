@@ -54,7 +54,7 @@ def main() -> None:
         zip_ref.extractall(".")
     print("installing needed packages")
     os.chdir("./Vencord-main")
-    os.system("pnpm i; pnpm build")
+    os.system("pnpm i; pnpm build; chmod 777 .")
     
 
 #now we can use our own vencord
@@ -104,7 +104,7 @@ def main() -> None:
     with open(appfolder/"package.json", "w+") as pkg:
         pkg.write('{ "name": "discord", "main": "index.js" }\n')
     with open(appfolder/"index.js", "w+") as idx:
-        idx.write(f"require({dist_path/'patcher.js'});\n"
+        idx.write(f"require('{dist_path/'patcher.js'}');\n"
                   "require(../app.asar);")
 
     print("That should be all. Please fully close Discord and restart to check"
