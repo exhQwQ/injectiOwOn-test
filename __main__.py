@@ -39,11 +39,7 @@ parser.add_argument(
 
 
 def main() -> None:
-    if "linux" in sys.platform and not os.geteuid() == 0:
-        print("please run with superuser perms :3")
-        exit(1)
     print("welcome to InjectiOwOn! Sit back and I'll do everything :3")
-
 
     print("downloading vencord.....")
     url = 'https://codeload.github.com/Vendicated/Vencord/zip/refs/heads/main'
@@ -54,10 +50,15 @@ def main() -> None:
         zip_ref.extractall(".")
     print("installing needed packages")
     os.chdir("./Vencord-main")
-    os.system("pnpm i; pnpm build; chmod 777 .")
-    
 
-#now we can use our own vencord
+    (os.system(it) for it in [
+        "pnpm i",
+        "pnpm build",
+        "chmod 755 .",  # ?????? why
+    ])
+
+
+# now we can use our own vencord
 
     discordfolder: Path = Path(".")
     vencord_base_path = Path(__file__).parent/"Vencord-main"
@@ -71,6 +72,10 @@ def main() -> None:
         discordfolder = get_discord(args.channel)
     except FileNotFoundError as fnfe:
         print(f"{fnfe.strerror}\n{fnfe.errno}: {os.strerror(fnfe.errno)}")
+
+    if not os.access(discordfolder, os.W_OK):
+        print(f'I am missing write access to {discordfolder}. Have you considered the rope?')
+        exit(1)
 
     for child in discordfolder.iterdir():
         if child.name.lower() == "resources":
