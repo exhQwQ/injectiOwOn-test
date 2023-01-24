@@ -4,7 +4,14 @@ vendy is a big meanie x2
 # HOW TO USE
 This is a rather naïve CLI installer and as such it isn't perfect yet.
 That said, it might work, so try running the following commands and report back to us:  
-`git clone https://github.com/Vendicated/Vencord && cd Vencord; git clone https://github.com/exhq/injectiOwOn && cd injectiOwOn; sudo python main.py`
+first of all, you will need pnpm. (it MIGHT be automated in the future)  
+for windows, run:  
+`npm install -g pnpm`  
+for linux, you will need superuser perms. if you're sane and use sudo, it should be:  
+`sudo npm install -g pnpm`  
+then you can just run this command and everything should be handled by us:  
+`git clone https://github.com/exhq/injectiOwOn; python ./injectiOwOn/.`
+
 
 # Adding platform support
 Just send in a PR that adds a platform-specific file and make the proper changes
