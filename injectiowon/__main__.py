@@ -5,6 +5,7 @@ import argparse
 import errno
 import os
 import sys
+import requests
 
 if "linux" in sys.platform:
     from linux import get_discord
