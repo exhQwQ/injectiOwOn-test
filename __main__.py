@@ -51,11 +51,8 @@ def main() -> None:
     print("installing needed packages")
     os.chdir("./Vencord-main")
 
-    (os.system(it) for it in [
-        "pnpm i",
-        "pnpm build",
-        "chmod 755 .",  # ?????? why
-    ])
+    os.system("pnpm i")
+    os.system("pnpm build")
 
 
 # now we can use our own vencord
@@ -72,49 +69,25 @@ def main() -> None:
         discordfolder = get_discord(args.channel)
     except FileNotFoundError as fnfe:
         print(f"{fnfe.strerror}\n{fnfe.errno}: {os.strerror(fnfe.errno)}")
-
-    if not os.access(discordfolder, os.W_OK):
-        print(f'I am missing write access to {discordfolder}. Have you considered the rope?')
-        exit(1)
-
-    for child in discordfolder.iterdir():
-        if child.name.lower() == "resources":
-            discordfolder = child
-            break
-        elif child.name.lower().startswith("app-"):
-            for grandchild in child.iterdir():
-                if grandchild.name.lower() == "resources":
-                    discordfolder = grandchild
-                    break
-        elif child.name.startswith("Discord"):
-            for grandchild in child.iterdir():
-                if grandchild.name.lower() == "resources":
-                    discordfolder = grandchild
-                    break
-                elif child.name.lower().startswith("app-"):
-                    for greatgrandchild in child.iterdir():
-                        if greatgrandchild.name.lower() == "resources":
-                            discordfolder = greatgrandchild
-                            break
+    resources = discordfolder / "resources"
+    appdir = resources / "app.asar"
+    if (resources / "_app.asar").exists:
+        print("[app.asar has been already renamed]")
     else:
-        raise OSError(errno.ENOENT,
-                      "Proper folder not found, please start Discord once!",
-                      str(discordfolder))
-
-    (discordfolder / "app").mkdir(parents=False, exist_ok=True)
-    appfolder = discordfolder/"app"
-    (appfolder/"package.json").touch(exist_ok=True)
-    (appfolder/"index.js").touch(exist_ok=True)
-
-    with open(appfolder/"package.json", "w+") as pkg:
-        pkg.write('{ "name": "discord", "main": "index.js" }\n')
-    with open(appfolder/"index.js", "w+") as idx:
-        idx.write(f"require('{dist_path/'patcher.js'}');\n"
-                  "require(../app.asar);")
-
-    print("That should be all. Please fully close Discord and restart to check"
-          " if it worked, your settings should contain a Vencord listing!")
-
+        appdir.rename(resources / "_app.asar")
+    if appdir.exists:
+         print("[folder exists]")
+    else:
+        appdir.mkdir()
+    with open(str(appdir)+"/package.json", 'w') as f:
+        f.write("""
+        {
+	"name": "discord",
+	"main": "index.js"
+}""")
+    folderloc = vencord_base_path / "dist" / "patcher.js"
+    with open(str(appdir)+"/index.js", 'w') as f:
+            f.write(f"require('{str(folderloc)}')")
 
 args = parser.parse_args()
 if __name__ == "__main__":

@@ -25,8 +25,10 @@ def get_discord(channel: str = "stable") -> Path:
         f"/usr/share/Discord{altcname}",
         f"/usr/lib64/Discord{altcname}",
         f"/opt/discord-{cname}",
-        f"{os.environ['HOME']}/.local/share/Discord{altcname}"
+        f"{os.environ['HOME']}/.local/share/Discord{altcname}",
     ]
+    if cname == "":
+        discord_paths.append(f"/opt/discord")
     for i in discord_paths:
         with Path(i) as pi:
             if pi.exists():
