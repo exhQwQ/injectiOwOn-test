@@ -71,14 +71,9 @@ def main() -> None:
         print(f"{fnfe.strerror}\n{fnfe.errno}: {os.strerror(fnfe.errno)}")
     resources = discordfolder / "resources"
     appdir = resources / "app.asar"
-    if (resources / "_app.asar").exists:
-        print("[app.asar has been already renamed]")
-    else:
-        appdir.rename(resources / "_app.asar")
-    if appdir.exists:
-         print("[folder exists]")
-    else:
-        appdir.mkdir()
+
+    appdir.rename(resources / "_app.asar")
+    appdir.mkdir()
     with open(str(appdir)+"/package.json", 'w') as f:
         f.write("""
         {
